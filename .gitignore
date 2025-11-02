@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Log files and counters
+logs/
+*.log
+ip_counts.json
+
+# Local configuration file
+# Users should copy config.json.example to config.json
+config.json

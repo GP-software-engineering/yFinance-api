@@ -1,0 +1,42 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 54321,
+    "cors_origins": [
+      "http://localhost",
+      "http://localhost:8080"
+    ]
+  },
+  "logging": {
+    "main_log_file": "/var/log/yfinance-api/activity.log",
+    "ip_counts_file": "/var/log/yfinance-api/ip_counts.json",
+    "ip_write_frequency": 50	// write the api calls counter every N accesses 
+  },
+  "caching": {
+    "enabled": true,
+    "ttl_seconds": 5,
+    "max_size": 128
+  }
+}
+
+{
+  "server": {
+    "host": "0.0.0.0",        // Host to bind to. '0.0.0.0' for all interfaces.
+    "port": 5000,             // Default port for the service
+    "cors_origins": [
+      "http://localhost",     // Allow local development
+      "*"                     // Allow all (remove for stricter production)
+    ]
+  },
+  "logging": {
+    "main_log_file": "logs/activity.log",
+    "ip_counts_file": "logs/ip_counts.json",
+    // How many requests before batch-writing IP counts to disk.
+    "ip_write_frequency": 50	// write the api calls counter every N accesses 
+  },
+  "caching": {
+    "enabled": true,          // Master switch for the cache.
+    "ttl_seconds": 600,       // How long to cache a result (600 = 10 minutes).
+    "max_size": 128           // Max number of unique tickers to cache.
+  }
+}
