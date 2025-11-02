@@ -5,12 +5,23 @@ This project provides a lightweight, self-hosted REST API for the `yfinance` Pyt
 - IP-based request counting, and 
 - modular codebase.
 
+To install and run in production environment see the [installation-and-setup-production](installation-and-setup-production.md) instructions.
+
+---
+## Table of Contents
+- [Quick Start Guide](#quick-start-guide)
+- [API Endpoints](#api-endpoints)
+- [Architecture](#architecture)
+- [Contributing](#contributing)
+- [License](#license)
+---
+
 ## Quick Start Guide
-To run the API server locally for testing exevcute the following commands.
+To run the API server locally for testing, execute the following commands:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/yfinance-api.git
+git clone https://github.com/GP-software-engineering/yFinance-api
 cd yfinance-api
 
 # Create virtual environment and install dependencies
@@ -101,7 +112,7 @@ Description: Returns historical analyst recommendations.
 
 Example:
 
-    curl [http://1](http://1)Z.0.0.1:5000/ticker/NVDA/recommendations
+    curl http://127.0.0.1:5000/ticker/NVDA/recommendations
 
 #### Calendar
 
@@ -118,14 +129,14 @@ Below is a high-level architecture diagram of the service and its main component
 
 ```mermaid
 flowchart LR
-    C[Client / Browser / App]
-    RP[nginx Reverse Proxy]
-    API[yFinance API (FastAPI + Uvicorn)]
-    SVC[Service Layer\ncore_services.py]
-    YF[yfinance Library]
-    YAHOO[(Yahoo Finance)]
-    CACHE[(In-Memory Cache)]
-    LOGS[(Logs + IP Counts)]
+    C["Client / Browser / App"]
+    RP["nginx Reverse Proxy"]
+    API["yFinance API (FastAPI + Uvicorn)"]
+    SVC["Service Layer\ncore_services.py"]
+    YF["yfinance Library"]
+    YAHOO["Yahoo Finance"]
+    CACHE["In-Memory Cache"]
+    LOGS["Logs + IP Counts"]
 
     C --> RP --> API
     API --> SVC --> YF --> YAHOO
@@ -163,4 +174,4 @@ pytest -q
 ---
 
 ## License
-MIT License (or specify your license here).
+MIT License Copyright (c) 2025 GP software engineering (by gpcaretti)

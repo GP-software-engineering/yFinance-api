@@ -1,34 +1,17 @@
 # yFinance Self-Hosted API Server ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 
-This project provides a lightweight, self-hosted REST API for the `yfinance` Python library. It is designed to run as a robust `systemd` service on Ubuntu, featuring:
-- request caching, 
-- IP-based request counting, and 
-- modular codebase.
+This is project provides a lightweight, self-hosted REST API for the `yfinance` Python library.
+See the [README](README.md) file for usage and contribution guidelines.
+
+This guide helps with installation in production environments.
 
 ---
 
 ## Table of Contents
-- [Quick Start Guide](#quick-start-guide)
-- [API Endpoints](#2-api-endpoints)
-
 - [1. Installation and Setup (Production)](#1-installation-and-setup-production)
-  - [Prerequisites](#prerequisites)
-  - [Step 1: Create Service User and Directories](#step-1-create-service-user-and-directories)
-  - [Step 2: Deploy Application Files](#step-2-deploy-application-files)
-  - [Step 3: Configure the Application](#step-3-configure-the-application)
-  - [Step 4: Setup the systemd Service](#step-4-setup-the-systemd-service)
-  - [Step 5: Activate and Start the Service](#step-5-activate-and-start-the-service)
-
-- [3. Configuring nginx as a Reverse Proxy (optional)](#3-configuring-nginx-as-a-reverse-proxy-optional)
-  - [Step 1: Create nginx Configuration File](#step-1-create-nginx-configuration-file)
-  - [Step 2: Example nginx Configuration](#step-2-example-nginx-configuration)
-  - [Step 3: Enable and Restart nginx](#step-3-enable-and-restart-nginx)
-- [Architecture](#architecture)
-- [Contributing](#contributing)
-- [License](#license)
+- [2. Configuring nginx as a Reverse Proxy (optional)](#2-configuring-nginx-as-a-reverse-proxy-optional)
 
 ---
-
 
 ## 1. Installation and Setup (Production)
 
@@ -150,7 +133,7 @@ sudo journalctl -u yfinance-api.service -f
 ```
 
 
-# 3. Configuring nginx as a Reverse Proxy (optional)
+# 2. Configuring nginx as a Reverse Proxy (optional)
 
 It is highly recommended to run this service behind `nginx`. This provides SSL (HTTPS), request buffering, and allows you to run on standard ports (80/443).
 
@@ -207,58 +190,5 @@ sudo systemctl reload nginx
 
 Your service is now accessible via `http://api.yourdomain.com` (or your server's IP) and is fully managed by nginx.
 
----
+EOF
 
-## Architecture
-Below is a high-level architecture diagram of the service and its main components.
-
-```mermaid
-flowchart LR
-    C[Client / Browser / App]
-    RP[nginx Reverse Proxy]
-    API[yFinance API (FastAPI + Uvicorn)]
-    SVC[Service Layer\ncore_services.py]
-    YF[yfinance Library]
-    YAHOO[(Yahoo Finance)]
-    CACHE[(In-Memory Cache)]
-    LOGS[(Logs + IP Counts)]
-
-    C --> RP --> API
-    API --> SVC --> YF --> YAHOO
-    API --> CACHE
-    API --> LOGS
-```
-
-**Notes**
-- **FastAPI + Uvicorn** serves the REST endpoints.
-- **Cache** (TTL-based) reduces repeated upstream calls.
-- **Logging & IP counting** are persisted under `/var/log/yfinance-api/`.
-- **nginx** optionally fronts the service for TLS, buffering and standard ports (80/443).
-
----
-
-## Contributing
-We welcome contributions! To contribute:
-
-1. Fork the repository.
-2. Create a new branch for your feature or fix: `git checkout -b feat/awesome-thing`.
-3. Commit with conventional messages (e.g., `feat: add cache metrics`).
-4. Ensure code follows PEP 8 and is formatted with `black` / `ruff`.
-5. Add or update tests where applicable.
-6. Open a Pull Request describing the change and rationale.
-
-### Development Setup
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -U pip
-pip install -r requirements-dev.txt
-pre-commit install
-pytest -q
-```
-
----
-
-## License
-MIT License (or specify your license here).
