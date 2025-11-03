@@ -41,7 +41,12 @@ uvicorn api_server:app --host 0.0.0.0 --port 5000
 
 Access the API at: `http://127.0.0.1:5000`
 
-To install and run in production environment see the [installation-and-setup-production](installation-and-setup-production.md) instructions.
+**Notes**:
+
+1. To prevent your IP address from being **blacklisted** by Yahoo, the application caches requests 
+in memory by default (10-minute TTL); this and other settings can be modified in the `config.json`
+file (requires a server restart).
+2. To install and run in production environment see the [installation-and-setup-production](installation-and-setup-production.md) instructions.
 
 ---
 
