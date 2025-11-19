@@ -44,7 +44,7 @@ sudo chown yfinance-api:yfinance-api /var/log/yfinance-api
 
 ### Step 2: Deploy Application Files
 
-Copy the application files (`api_server.py`, `core_services.py`, `yfinance_service.py`) to `/opt/yfinance-api/`.
+Copy the application files (`src/yfinance_api/api_server.py`, `core_services.py`, `yfinance_service.py`) to `/opt/yfinance-api/`.
 
 Then, create the virtual environment and install dependencies:
 
@@ -108,7 +108,7 @@ User=yfinance-api
 Group=yfinance-api
 WorkingDirectory=/opt/yfinance-api
 Environment="YFINANCE_API_CONFIG=/etc/yfinance-api/config.json"
-ExecStart=/opt/yfinance-api/venv/bin/python /opt/yfinance-api/api_server.py
+ExecStart=/opt/yfinance-api/venv/bin/python /opt/yfinance-api/src/yfinance_api/api_server.py
 Restart=always
 RestartSec=5
 

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yfinance-api-server"
+version = "0.1.0"
+description = "Self-hosted REST API over yfinance (FastAPI + uvicorn), with caching and modular services."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "GP Software Engineering" }]
+license = { text = "MIT" }
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.23",
+  "yfinance>=0.2.40",
+  "cachetools>=5.3",
+  "json5>=0.9"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]
