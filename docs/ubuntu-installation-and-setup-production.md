@@ -1,7 +1,8 @@
 # yFinance Self-Hosted API Server ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 
-This is project provides a lightweight, self-hosted REST API for the `yfinance` Python library.
-See the [README](README.md) file for usage and contribution guidelines.
+This is project provides a lightweight, self-hosted REST API for the `yfinance` Python library on
+an Linux-based OS.
+See the [README](../README.md) file for usage and contribution guidelines.
 
 This guide helps with installation in production environments.
 
@@ -84,7 +85,8 @@ Example configuration:
   "caching": {
     "enabled": true,          // Master switch for the cache.
     "ttl_seconds": 600,       // How long to cache a result (600 = 10 minutes).
-    "max_size": 128           // Max number of unique tickers to cache.
+    "max_size": 128,          // Max number of unique tickers to cache.
+    "cache_dir": "/tmp/py-yfinance-cache"
   }
 }
 ```
@@ -130,6 +132,24 @@ Check status and logs:
 ```bash
 sudo systemctl status yfinance-api.service
 sudo journalctl -u yfinance-api.service -f
+```
+
+### Step 5: Activate and Start the Service
+
+Run a curl command on the base of the host and port set in the config.json file.
+
+Example:
+
+```bash
+curl "http://localhost:5000/"
+```
+
+The Output should be something like:
+```
+{
+   "status":"online",
+   "endpoints":["/tickers/info","/tickers/quote","/tickers/history"]
+}
 ```
 
 

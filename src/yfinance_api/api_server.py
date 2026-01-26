@@ -5,8 +5,12 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 import uvicorn
 from typing import Optional
+
+# Import the version from your __init__.py
+from __init__ import __version__
 
 from core_services import (
     logger,
@@ -25,12 +29,21 @@ from yfinance_service import (
     get_calendar
 )
 
+# --- Helper Functions ---
+def parse_symbols(symbol: str, symbols: str):
+    """Parses single or multiple symbols into a list."""
+    if symbols:
+        return [s.strip().upper() for s in symbols.split(",")]
+    if symbol:
+        return [symbol.strip().upper()]
+    return []
+
 # --- Lifespan Manager ---
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup logic
-    logger.info("Server starting up...")
-    yield  # The application runs while yielding
+    logger.info(f"yFinance API Server v{__version__} starting up...")
+    yield  
     
     # Shutdown logic
     logger.info("Server shutting down. Saving final IP counts...")
@@ -41,10 +54,14 @@ async def lifespan(app: FastAPI):
         logger.error(f"Failed to save IP counts on shutdown: {e}")
 
 # --- App Init ---
+# Set docs_url="/" to show Swagger UI at the root address
 app = FastAPI(
     title="yFinance API",
     description="A unified, self-hosted API for yFinance data.",
-    lifespan=lifespan
+    version=__version__,
+    lifespan=lifespan,
+    docs_url="/",      # Swagger UI now at http://localhost:5000/
+    redoc_url="/redoc" # ReDoc available at http://localhost:5000/redoc
 )
 
 # --- Middleware ---
@@ -92,62 +109,56 @@ def parse_symbols(symbol: Optional[str], symbols: Optional[str]):
 
 # --- Unified Endpoints ---
 
-@app.get("/")
-def root():
-    return {"status": "online", "endpoints": ["/tickers/info", "/tickers/quote", "/tickers/history"]}
-
-@app.get("/tickers/info")
-def route_info(
-    symbol: str = Query(None, description="Single symbol (alias)"),
-    symbols: str = Query(None, description="Comma separated symbols")
-):
-    """Get full info for one or more tickers."""
+@app.get("/tickers/info", tags=["Ticker Data"])
+def route_info(symbol: str = Query(None), symbols: str = Query(None)):
+    """Get comprehensive information for one or more tickers."""
     target_list = parse_symbols(symbol, symbols)
     try:
         return get_info(target_list)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/tickers/quote")
-def route_quote(
-    symbol: str = Query(None),
-    symbols: str = Query(None)
-):
-    """Get lightweight quote for one or more tickers."""
+@app.get("/tickers/quote", tags=["Ticker Data"])
+def route_quote(symbol: str = Query(None), symbols: str = Query(None)):
+    """Get real-time quote data for one or more tickers."""
     target_list = parse_symbols(symbol, symbols)
     try:
         return get_quote(target_list)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/tickers/history")
+@app.get("/tickers/history", tags=["Market Data"])
 def route_history(
     symbol: str = Query(None),
     symbols: str = Query(None),
     period: str = "1mo",
     interval: str = "1d"
 ):
-    """Get historical data for one or more tickers."""
+    """Get historical data (OHLCV) for one or more tickers."""
     target_list = parse_symbols(symbol, symbols)
     try:
         return get_history(target_list, period, interval)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/tickers/dividends")
+@app.get("/tickers/dividends", tags=["Corporate Actions"])
 def route_dividends(symbol: str = Query(None), symbols: str = Query(None)):
+    """Get dividend history for one or more tickers."""
     return get_dividends(parse_symbols(symbol, symbols))
 
-@app.get("/tickers/splits")
+@app.get("/tickers/splits", tags=["Corporate Actions"])
 def route_splits(symbol: str = Query(None), symbols: str = Query(None)):
+    """Get stock split history."""
     return get_splits(parse_symbols(symbol, symbols))
 
-@app.get("/tickers/recommendations")
+@app.get("/tickers/recommendations", tags=["Analysis"])
 def route_recs(symbol: str = Query(None), symbols: str = Query(None)):
+    """Get analyst recommendations."""
     return get_recommendations(parse_symbols(symbol, symbols))
 
-@app.get("/tickers/calendar")
+@app.get("/tickers/calendar", tags=["Analysis"])
 def route_calendar(symbol: str = Query(None), symbols: str = Query(None)):
+    """Get earnings and historical events calendar."""
     return get_calendar(parse_symbols(symbol, symbols))
 
 # --- Main Execution ---

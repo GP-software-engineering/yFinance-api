@@ -3,6 +3,8 @@
 #
 # yfinance_service.py
 import yfinance as yf
+import yfinance.utils as yf_utils 
+import os
 from fastapi import HTTPException
 from cachetools import TTLCache, cached
 from core_services import logger, cache_config
@@ -13,6 +15,7 @@ from datetime import datetime, timezone
 if cache_config.get("enabled", True):
     ttl = cache_config.get("ttl_seconds", 600)
     max_size = cache_config.get("max_size", 128)
+    cache_dir = cache_config.get("cache_dir", "/tmp/py-yfinance-cache")
     
     logger.info(f"Caching enabled: TTL={ttl}s, MaxSize={max_size}")
     
@@ -28,6 +31,14 @@ if cache_config.get("enabled", True):
     # Batch result caches
     multi_info_cache = TTLCache(maxsize=64, ttl=ttl)
     multi_quote_cache = TTLCache(maxsize=64, ttl=ttl)
+
+    try:
+        # Ensure the cache directory exists and is writable
+        os.makedirs(cache_dir, exist_ok=True)
+        yf.set_tz_cache_location(cache_dir)
+        logger.info(f"yfinance internal cache set to: {cache_dir}")
+    except Exception as e:
+        logger.warning(f"Could not set custom yfinance cache location at {cache_dir}: {e}")
 else:
     logger.info("Caching is disabled via config.")
     # Dummy caches
@@ -64,7 +75,10 @@ def _map_fast_info_to_dict(ticker_symbol, fi, info=None):
     market_time = None
     if info and isinstance(info, dict):
         market_time = info.get("regularMarketTime")
-    iso_time = datetime.utcfromtimestamp(market_time).isoformat() + "Z" if market_time else None
+
+    iso_time = None
+    if market_time:
+        iso_time = datetime.fromtimestamp(market_time, timezone.utc).isoformat().replace("+00:00", "Z")
 
     return {
         "symbol": ticker_symbol,

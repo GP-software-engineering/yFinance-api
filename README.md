@@ -6,7 +6,10 @@ This project provides a lightweight, self-hosted REST API for the `yfinance` Pyt
 - **Lightweight Quotes**: Specific endpoint for fast, bandwidth-efficient price data.
 - **Traffic Monitoring**: IP-based request counting and logging.
 
-To install and run in a production environment see the [installation-and-setup-production](installation-and-setup-production.md) instructions.
+To install and run in a production environment see the 
+[Ubuntu installation and setup production](./docs/ubuntu-installation-and-setup-production.md) instructions.
+or
+[Windows installation and setup production](./docs/windows-installation-and-setup-production.md) instructions.
 
 ---
 ## Table of Contents
@@ -26,8 +29,12 @@ git clone https://github.com/GP-software-engineering/yFinance-api
 cd yFinance-api
 
 # Create virtual environment and install dependencies
+### on Linux:
 python3 -m venv venv
 source venv/bin/activate
+### on WindoZe:
+python -m venv venv
+.\venv\Scripts\activate
 
 # Either install from 'requirements' or install packages explicitly:
 # 
@@ -46,12 +53,23 @@ python api_server.py
 
 Access the API at: `http://127.0.0.1:5000`
 
-**Notes**:
+
+### To deploy on Windows:
+1. Create virtual environment
+2. Install dependencies
+3. Copy and edit `config.json`
+4. Run with uvicorn or install as Windows service using NSSM
+5. Use automation scripts in `scripts/`
+
+See full guide [Windows installation and setup production](./docs/windows-installation-and-setup-production.md) instructions.
+
+
+### Notes:
 
 1. To prevent your IP address from being **blacklisted** by Yahoo, the application caches requests 
 in memory by default (10-minute TTL); this and other settings can be modified in the `config.json`
 file (requires a server restart).
-2. To install and run in production environment see the [installation-and-setup-production](installation-and-setup-production.md) instructions.
+2. To install and run in production environment see the [installation-and-setup-production](docs/installation-and-setup-production.md) instructions.
 
 ---
 

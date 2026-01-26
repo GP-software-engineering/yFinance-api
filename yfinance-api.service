@@ -1,0 +1,17 @@
+[Unit]
+Description=GPSoftware yFinance API Server
+After=network.target
+
+[Service]
+User=yfinance-api
+Group=finance
+
+WorkingDirectory=/opt/yfinance-api
+Environment="YFINANCE_API_CONFIG=/etc/yfinance-api/config.json"
+ExecStart=/opt/yfinance-api/venv/bin/python /opt/yfinance-api/api_server.py
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

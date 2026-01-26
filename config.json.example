@@ -37,6 +37,7 @@
   "caching": {
     "enabled": true,          // Master switch for the cache.
     "ttl_seconds": 600,       // How long to cache a result (600 = 10 minutes).
-    "max_size": 128           // Max number of unique tickers to cache.
+    "max_size": 128,          // Max number of unique tickers to cache.
+    "cache_dir": "/tmp/py-yfinance-cache"
   }
 }
