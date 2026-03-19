@@ -29,7 +29,7 @@ Write-Host "Activating virtual environment..."
 
 # Install dependencies
 Write-Host "Installing required packages..." -ForegroundColor Cyan
-pip install --upgrade pip pip install -r requirements.txt 
+pip --upgrade pip pip install -r requirements.txt 
 
 # Prepare Configuration File
 if (-not (Test-Path "config.json")) {
